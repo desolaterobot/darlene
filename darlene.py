@@ -49,10 +49,12 @@ def toggleLiveSearch():
     else:
         setLabels("Live search turned off.", "Program will halt while searching. Much faster, but no indication of progress.")
 
+#disable relevant buttons
 def disableButtons():
     for button in globalButtons:
         button.config(state='disabled')
 
+#the reverse
 def enableButtons():
     for button in globalButtons:
         button.config(state='normal')
@@ -82,10 +84,12 @@ def sizeToString(size:int, precision:int=2):
         return f"{round(size)}{unit}"
     return f"{round(size, precision)}{unit}"
 
+#converts unixtime to a readable date string
 def unixToString(unixtime:float):
     value = datetime.datetime.fromtimestamp(unixtime)
     return f"{value:%d/%m/%Y %H:%M:%S}"
 
+#converts a unixtime to a readable date difference from the current date
 def unixTimeDifferenceToString(unixtime:float):
     dateTime = datetime.datetime.fromtimestamp(unixtime)
     current_datetime = datetime.datetime.now()
@@ -169,8 +173,10 @@ def walkDirectory():
 
 #opens a option to select the directory and then automatically calls walkDirectory()
 def selectDirectory():
-    dirBox.delete(0, tk.END)
     filepath = filedialog.askdirectory(title='Select target directory...')
+    if not filepath:
+        return
+    dirBox.delete(0, tk.END)
     dirBox.insert(0, filepath)
     walkDirectory()
 
@@ -232,6 +238,25 @@ Last accessed {unixTimeDifferenceToString(filestats.st_atime)} ({unixToString(fi
     buttonRow.pack()
     return window
 
+def aboutWindow():
+    window = tk.Toplevel(root, bg=LIGHTPURPLE)
+    centerWindow(window, 700, 340)
+    window.title("About...")
+    window.focus_force()
+    titleLabel = tk.Label(window, text='Darlene 1.0', font=('Helvetica', 15), bg=LIGHTPURPLE, fg=VERYWHITE)
+    titleLabel.pack(pady=(10,2))
+    desc = """Darlene is a tool that scans a given folder
+and sorts every file, including those within 
+nested folders, by size in descending order.
+This helps to remove files you don't need, 
+searching from the largest file downwards.
+Useful for decluttering deeply nested folders.
+    """
+    descLabel = tk.Label(window, text=desc, font=('Helvetica', 13), bg=LIGHTPURPLE, fg=VERYWHITE)
+    descLabel.pack(pady=(2,2))
+    
+
+#happens whenever the listbox is clicked
 def clickListBox(e):
     global listOfEverything
     selection = dirlistbox.curselection()
@@ -270,7 +295,7 @@ findDirectoryButton = ttk.Button(buttonFrame, text='Search for folder...', comma
 findDirectoryButton.grid(column=0, row=0, padx=(2,2))
 liveSearchButton = ttk.Button(buttonFrame, text=f'LiveSearch {"ON" if liveSearch else "OFF"}', command = toggleLiveSearch, takefocus=False)
 liveSearchButton.grid(column=1, row=0, padx=(2,2))
-aboutButton = ttk.Button(buttonFrame, text='About Darlene...', command = None, takefocus=False)
+aboutButton = ttk.Button(buttonFrame, text='About Darlene...', command = aboutWindow, takefocus=False)
 aboutButton.grid(column=2, row=0, padx=(2,2))
 globalButtons = [findDirectoryButton, liveSearchButton]
 buttonFrame.pack(padx=10, pady=10)
