@@ -206,6 +206,8 @@ def fileMenu(root, selectionIndex, size:tuple=(700,340)):
         #removes from the central list, from the listbox, and deletes the file itself.
         if not files.delete(completeFilePath):
             return
+        global totalSize
+        totalSize -= contentTuple[0]
         listOfEverything.remove(contentTuple)
         dirlistbox.delete(selectionIndex)
         window.destroy()
@@ -240,7 +242,7 @@ Last accessed {unixTimeDifferenceToString(filestats.st_atime)} ({unixToString(fi
 
 def aboutWindow():
     window = tk.Toplevel(root, bg=LIGHTPURPLE)
-    centerWindow(window, 700, 340)
+    centerWindow(window, 400, 250)
     window.title("About...")
     window.focus_force()
     titleLabel = tk.Label(window, text='Darlene 1.0', font=('Helvetica', 15), bg=LIGHTPURPLE, fg=VERYWHITE)
@@ -254,6 +256,8 @@ Useful for decluttering deeply nested folders.
     """
     descLabel = tk.Label(window, text=desc, font=('Helvetica', 13), bg=LIGHTPURPLE, fg=VERYWHITE)
     descLabel.pack(pady=(2,2))
+    visitGitHubButton = ttk.Button(window, text='Visit Github', command = None, takefocus=False)
+    visitGitHubButton.pack(pady=(2,2))
     
 
 #happens whenever the listbox is clicked
