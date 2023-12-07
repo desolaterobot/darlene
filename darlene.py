@@ -8,6 +8,7 @@ import saveload
 import files
 import datetime
 import win32file
+import webbrowser
 
 # GLOBAL ######################################################################################################
 
@@ -254,9 +255,11 @@ This helps to remove files you don't need,
 searching from the largest file downwards.
 Useful for decluttering deeply nested folders.
     """
+    def visitWebsite():
+        webbrowser.open("https://github.com/desolaterobot/darlene")
     descLabel = tk.Label(window, text=desc, font=('Helvetica', 13), bg=LIGHTPURPLE, fg=VERYWHITE)
     descLabel.pack(pady=(2,2))
-    visitGitHubButton = ttk.Button(window, text='Visit Github', command = None, takefocus=False)
+    visitGitHubButton = ttk.Button(window, text='Visit Github', command = visitWebsite, takefocus=False)
     visitGitHubButton.pack(pady=(2,2))
     
 
