@@ -7,7 +7,6 @@ import time
 import saveload
 import files
 import datetime
-import win32file
 import webbrowser
 
 # GLOBAL ######################################################################################################
@@ -223,7 +222,7 @@ Size: {sizeToString(contentTuple[0])} ({(contentTuple[0]/totalSize)*100:.4g}% of
 Created {unixTimeDifferenceToString(filestats.st_ctime)} ({unixToString(filestats.st_ctime)})  
 Last modified {unixTimeDifferenceToString(filestats.st_mtime)} ({unixToString(filestats.st_mtime)})
 Last accessed {unixTimeDifferenceToString(filestats.st_atime)} ({unixToString(filestats.st_atime)})
-{"Readable" if os.access(completeFilePath, os.R_OK) else "Not Readable"}, {"Writable" if os.access(completeFilePath, os.W_OK) else "Not Writable"}, {"Executable" if os.access(completeFilePath, os.X_OK) else "Not Executable"}, {"Hidden" if (win32file.GetFileAttributes(completeFilePath) & win32file.FILE_ATTRIBUTE_HIDDEN) else "Visible"}"""
+{"Readable" if os.access(completeFilePath, os.R_OK) else "Not Readable"}, {"Writable" if os.access(completeFilePath, os.W_OK) else "Not Writable"}, {"Executable" if os.access(completeFilePath, os.X_OK) else "Not Executable"}"""
 
     pathLabel = tk.Label(window, text=text, font=('Microsoft Sans Serif', 13), bg=LIGHTPURPLE, fg=VERYWHITE)
     pathLabel.pack(pady=(4,4))
@@ -259,7 +258,7 @@ Useful for decluttering deeply nested folders.
         webbrowser.open("https://github.com/desolaterobot/darlene")
     descLabel = tk.Label(window, text=desc, font=('Helvetica', 13), bg=LIGHTPURPLE, fg=VERYWHITE)
     descLabel.pack(pady=(2,2))
-    visitGitHubButton = ttk.Button(window, text='Visit Github', command = visitWebsite, takefocus=False)
+    visitGitHubButton = ttk.Button(window, text='Visit GitHub', command = visitWebsite, takefocus=False)
     visitGitHubButton.pack(pady=(2,2))
     
 
