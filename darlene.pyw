@@ -140,7 +140,7 @@ def walkDirectory():
     disableButtons()
     
     setLabels("Searching folder...", "This program is temporarily halted. If you want to update the interface while searching, turn on LiveSearch.")
-    root.update()
+    root.update_idletasks()
 
     startTime = time.time()
 
@@ -240,6 +240,62 @@ Last accessed {unixTimeDifferenceToString(filestats.st_atime)} ({unixToString(fi
     buttonRow.pack()
     return window
 
+def multiMenu(root, selection, size:tuple=(600,380)):
+    global listOfEverything
+
+    #multiContentTuple is of the format list[(size, folder, file)]
+    multiContentTuple = [listOfEverything[i] for i in selection]
+    window = tk.Toplevel(root, bg=LIGHTPURPLE)
+    centerWindow(window, size[0], size[1])
+    window.title(f"Multiple Files Selected")
+    window.focus_force()
+
+    def deleteAll():
+        for contentTuple in multiContentTuple:
+            completeFilePath = os.path.join(contentTuple[1], contentTuple[2])
+            #removes from the central list, from the listbox, and deletes the file itself.
+            if not files.delete(completeFilePath):
+                return
+            global totalSize
+            totalSize -= contentTuple[0]
+            dirlistbox.delete(listOfEverything.index(contentTuple))
+            listOfEverything.remove(contentTuple)
+            window.destroy()
+    
+    def startAll():
+        for contentTuple in multiContentTuple:
+            completeFilePath = os.path.join(contentTuple[1], contentTuple[2])
+            files.start(completeFilePath)
+        window.destroy()
+
+    pathLabel = tk.Label(window, text="Files Selected:", font=('Microsoft Sans Serif', 13), bg=LIGHTPURPLE, fg=VERYWHITE)
+    pathLabel.pack(pady=(4,4))
+
+    listBox = tk.Listbox(
+        window, 
+        selectmode=tk.SINGLE, width=70, height=15, font=('Consolas', 11),
+        bg=DARKPURPLE, fg=WHITE, highlightbackground=WHITE,
+        selectbackground=WHITE, selectforeground=DARKPURPLE, selectborderwidth=0,
+    )
+
+    def onClickMultiContentListBox(e):
+        fileMenu(root, listOfEverything.index( multiContentTuple[listBox.curselection()[0]] ))
+    
+    listBox.bind("<Double-Button-1>", onClickMultiContentListBox)
+
+    for content in multiContentTuple:
+        listBox.insert(tk.END, f"[{sizeToString(content[0])}] {content[2]}")
+
+    listBox.pack()
+
+    buttonFrame = tk.Frame(window, bg=LIGHTPURPLE)
+    deleteButton = tk.Button(buttonFrame, text="Delete All", font=('Microsoft Sans Serif', 12), command=deleteAll, fg='red')
+    deleteButton.grid(column=1, row=0, padx=(3,3))
+    openButton = tk.Button(buttonFrame, text="Open All", font=('Microsoft Sans Serif', 12), command=startAll)
+    openButton.grid(column=0, row=0, padx=(3,3))
+
+    buttonFrame.pack(pady=(10,10))   
+
 def aboutWindow():
     window = tk.Toplevel(root, bg=LIGHTPURPLE)
     centerWindow(window, 400, 250)
@@ -271,6 +327,8 @@ def clickListBox(e):
         return
     if len(selection) == 1:
         fileMenu(root, selection[0])
+    else:
+        multiMenu(root, selection)
 
 # TKINTER ######################################################################################################
 
@@ -285,8 +343,7 @@ root = tk.Tk()
 
 style=ttk.Style()
 style.theme_use('default')
-style.configure('TButton', font=('Helvetica', 12)) 
-print(ttk.Style().theme_names())
+style.configure('TButton', font=('Helvetica', 12))
 
 targetLabel = tk.Label(root, text='Target Folder', font=('Helvetica', 14), bg=BGPURPLE, fg=WHITE)
 targetLabel.pack(pady=(10,2))
