@@ -1,4 +1,4 @@
-pyinstaller --noconfirm --onefile "%cd%\darlene.py"
+pyinstaller --noconfirm --onefile "%cd%\darlene.pyw"
 del "darlene.spec"
 rmdir /s /q build
 move %cd%\dist\darlene.exe %cd%
